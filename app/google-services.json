@@ -1,17 +1,29 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDhApw4XmWs4j8VdVFs3IJbZsOqBP4EM3w",
-  authDomain: "dob-app-53ae9.firebaseapp.com",
-  projectId: "dob-app-53ae9",
-  storageBucket: "dob-app-53ae9.firebasestorage.app",
-  messagingSenderId: "347197869906",
-  appId: "1:347197869906:web:436c50de77fc7b1bf4748b"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+{
+  "project_info": {
+    "project_number": "771280954060",
+    "project_id": "dob-app-81aec",
+    "storage_bucket": "dob-app-81aec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:771280954060:android:b346f6893f2fad72efd869",
+        "android_client_info": {
+          "package_name": "com.school.birthdaywidget"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrW7WtIBucrf7qIFBPQudlgEHUT8MxuoU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
