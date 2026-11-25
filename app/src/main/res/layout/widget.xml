@@ -3,10 +3,10 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:padding="12dp" android:background="@drawable/bg">
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="🎂 Aaj ke Birthday" android:textColor="#B3261E" android:textSize="13sp" android:textStyle="bold" />
+        android:text="🎂 Upcoming Birthdays" android:textColor="#B3261E" android:textSize="13sp" android:textStyle="bold" />
     <TextView android:id="@+id/date" android:layout_width="match_parent" android:layout_height="wrap_content"
         android:textColor="#111111" android:textSize="17sp" android:textStyle="bold" android:paddingBottom="6dp" />
     <ListView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="match_parent" android:divider="@null" />
     <TextView android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="Aaj koi birthday nahi" android:textColor="#555555" android:textSize="14sp" />
+        android:text="Aane wale dino me koi birthday nahi" android:textColor="#555555" android:textSize="14sp" />
 </LinearLayout>
