@@ -24,7 +24,8 @@ class MainActivity : Activity() {
         show()
     }
     private fun show() {
-        val l = loadToday(this)
-        tv.text = if (l.isEmpty()) "\nAaj koi birthday nahi" else "\n" + l.joinToString("\n") { "• ${it.first} (Std ${it.second})" }
+        val l = loadUpcoming(this)
+        tv.text = if (l.isEmpty()) "\nAane wale $DAYS_AHEAD din me koi birthday nahi"
+        else "\n" + l.joinToString("\n") { if (it.header) "\n${it.text}" else "• ${it.text} (Std ${it.std})" }
     }
 }

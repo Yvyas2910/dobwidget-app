@@ -13,14 +13,36 @@ import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun todayMD(): String = SimpleDateFormat("MM-dd", Locale.US).format(Date())
+const val DAYS_AHEAD = 7          // aaj se kitne din aage tak list dikhani hai
+const val INCLUDE_TODAY = true    // false karoge to aaj ka birthday list me nahi dikhega
 
-// cache se aaj ki list (naam, standard); cache purana ho to khali
-fun loadToday(c: Context): List<Pair<String, String>> {
-    val p = c.getSharedPreferences("bday", 0)
-    if (p.getString("date", "") != todayMD()) return emptyList()
-    val a = JSONArray(p.getString("list", "[]"))
-    return (0 until a.length()).map { a.getJSONObject(it).let { o -> o.getString("n") to o.getString("s") } }
+data class Entry(val header: Boolean, val text: String, val std: String = "")
+
+private fun mdOf(cal: Calendar) = SimpleDateFormat("MM-dd", Locale.US).format(cal.time)
+private fun dayAt(offset: Int): Calendar = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, offset) }
+private fun startOffset() = if (INCLUDE_TODAY) 0 else 1
+
+// Firestore query ke liye: dikhane wale saare dino ke "MM-dd"
+fun windowMDs(): List<String> = (startOffset()..DAYS_AHEAD).map { mdOf(dayAt(it)) }
+
+// cache se date-wise list: har din ka header + uske students
+fun loadUpcoming(c: Context): List<Entry> {
+    val a = JSONArray(c.getSharedPreferences("bday", 0).getString("list", "[]"))
+    val all = (0 until a.length()).map { a.getJSONObject(it) }
+    val out = mutableListOf<Entry>()
+    for (off in startOffset()..DAYS_AHEAD) {
+        val cal = dayAt(off)
+        val day = all.filter { it.optString("md") == mdOf(cal) }
+        if (day.isEmpty()) continue
+        val first = when (off) {
+            0 -> "Aaj"
+            1 -> "Kal"
+            else -> SimpleDateFormat("EEEE", Locale.ENGLISH).format(cal.time)
+        }
+        out.add(Entry(true, first + " • " + SimpleDateFormat("dd MMM", Locale.ENGLISH).format(cal.time)))
+        day.forEach { out.add(Entry(false, it.getString("n"), it.getString("s"))) }
+    }
+    return out
 }
 
 class BirthdayWidget : AppWidgetProvider() {
@@ -59,17 +81,24 @@ class BirthdayWidget : AppWidgetProvider() {
 class ListService : RemoteViewsService() {
     override fun onGetViewFactory(intent: Intent): RemoteViewsFactory = Factory(applicationContext)
     class Factory(private val c: Context) : RemoteViewsFactory {
-        private var items = listOf<Pair<String, String>>()
+        private var items = listOf<Entry>()
         override fun onCreate() {}
-        override fun onDataSetChanged() { items = loadToday(c) }
+        override fun onDataSetChanged() { items = loadUpcoming(c) }
         override fun onDestroy() {}
         override fun getCount() = items.size
-        override fun getViewAt(p: Int): RemoteViews = RemoteViews(c.packageName, R.layout.item).apply {
-            setTextViewText(R.id.name, items[p].first)
-            setTextViewText(R.id.std, "Std ${items[p].second}")
+        override fun getViewAt(p: Int): RemoteViews {
+            val e = items[p]
+            return if (e.header) {
+                RemoteViews(c.packageName, R.layout.item_header).apply { setTextViewText(R.id.hdr, e.text) }
+            } else {
+                RemoteViews(c.packageName, R.layout.item).apply {
+                    setTextViewText(R.id.name, e.text)
+                    setTextViewText(R.id.std, "Std ${e.std}")
+                }
+            }
         }
         override fun getLoadingView(): RemoteViews? = null
-        override fun getViewTypeCount() = 1
+        override fun getViewTypeCount() = 2
         override fun getItemId(p: Int) = p.toLong()
         override fun hasStableIds() = true
     }
