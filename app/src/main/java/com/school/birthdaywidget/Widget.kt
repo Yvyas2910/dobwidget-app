@@ -30,7 +30,7 @@ class BirthdayWidget : AppWidgetProvider() {
     }
     override fun onReceive(c: Context, i: Intent) {
         super.onReceive(c, i)
-        if (i.action == Intent.ACTION_DATE_CHANGED || i.action == Intent.ACTION_TIME_SET ||
+        if (i.action == Intent.ACTION_DATE_CHANGED || i.action == Intent.ACTION_TIME_CHANGED ||
             i.action == Intent.ACTION_TIMEZONE_CHANGED) { refresh(c); SyncScheduler.now(c) }
     }
     companion object {
